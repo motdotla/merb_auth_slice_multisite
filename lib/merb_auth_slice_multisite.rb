@@ -15,15 +15,15 @@ if defined?(Merb::Plugins)
   # Configuration options:
   # :layout - the layout to use; defaults to :merb_auth_slice_multisite
   # :mirror - which path component types to use on copy operations; defaults to all
-  Merb::Slices::config[:merb_auth_slice_multisite][:layout] ||= :merb_auth_slice_multisite
+  Merb::Slices::config[:merb_auth_slice_multisite][:layout] ||= :application
   
   # All Slice code is expected to be namespaced inside a module
   module MerbAuthSliceMultisite
     
     # Slice metadata
-    self.description = "MerbAuthSliceMultisite is a chunky Merb slice!"
-    self.version = "0.0.1"
-    self.author = "Engine Yard"
+    self.description = "see gem description"
+    self.version = "see gem version"
+    self.author = "see gem authors"
     
     # Stub classes loaded hook - runs before LoadClasses BootLoader
     # right after a slice's classes have been loaded internally.
@@ -32,6 +32,33 @@ if defined?(Merb::Plugins)
     
     # Initialization hook - runs before AfterAppLoads BootLoader
     def self.init
+      
+        # Actually check if the user belongs to the site 
+        ::Merb::Authentication.after_authentication do |user, request, params|
+          # clean this up somehow
+          if request.first_subdomain != nil
+            current_site = Site.first(:subdomain => request.first_subdomain)
+            if user.site_id != current_site.id
+              errors = request.session.authentication.errors
+              errors.clear!
+              errors.add("Label", "User does not belong to this site.")
+              nil
+            else
+              user
+            end
+          else
+            current_site = Site.first(:domain => request.domain)
+            if user.site_id != current_site.id
+              errors = request.session.authentication.errors
+              errors.clear!
+              errors.add("Label", "User does not belong to this site.")
+              nil
+            else
+              user
+            end
+          end
+        end
+        
     end
     
     # Activation hook - runs after AfterAppLoads BootLoader
@@ -52,12 +79,12 @@ if defined?(Merb::Plugins)
     # @note prefix your named routes with :merb_auth_slice_multisite_
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
-      # example of a named route
-      scope.match('/index(.:format)').to(:controller => 'main', :action => 'index').name(:index)
-      # the slice is mounted at /merb_auth_slice_multisite - note that it comes before default_routes
-      scope.match('/').to(:controller => 'main', :action => 'index').name(:home)
-      # enable slice-level default routes by default
-      scope.default_routes
+      # # example of a named route
+      # scope.match('/index(.:format)').to(:controller => 'main', :action => 'index').name(:index)
+      # # the slice is mounted at /merb_auth_slice_multisite - note that it comes before default_routes
+      # scope.match('/').to(:controller => 'main', :action => 'index').name(:home)
+      # # enable slice-level default routes by default
+      # scope.default_routes
     end
     
   end
