@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'rake'
+require 'rake/gempackagetask'
+require 'merb-core'
+require 'merb-core/tasks/merb'
 
 begin
   require 'jeweler'
@@ -36,9 +39,6 @@ rescue LoadError
   end
 end
 
-
-task :default => :test
-
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
@@ -53,4 +53,10 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+
+require 'spec/rake/spectask'
+require 'merb-core/test/tasks/spectasks'
+desc 'Default: run spec examples'
+task :default => 'spec'
 
