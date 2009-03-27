@@ -1,0 +1,115 @@
+h1. MerbAuthSliceMultisite
+
+This slice setups multisite capabilities in your merb application with an authentication check. 
+
+It works for subdomains (i.e. coolcars.yourapp.com) or for domains routed to your application via your server (i.e. coolcars.com). 
+
+It has a check to make a user to the site he's trying to login to. If the user does not match than authentication fails.
+
+h2. Instructions for installation:
+
+1. Add github as a gem source & install
+<pre><code>
+	gem sources -a http://gems.github.com
+	sudo gem install scottmotte-merb-auth-slice-multisite
+</code></pre>
+
+2. Setup your application to use the gem.* Add the following to the end of dependencies.rb.
+<pre><code>dependency "scottmotte-merb-auth-slice-multisite", :require_as => 'merb-auth-slice-multisite'</code></pre>
+
+3. Add in mixin. In your user model or in merb/merb-auth/setup.rb add the mixin 
+include Merb::Authentication::Mixins::UserBelongsToSite and then migrate your database.
+<pre><code>
+# in model
+class User
+	include Merb::Authentication::Mixins::UserBelongsToSite
+end
+
+# or as I prefer in merb/merb-auth/setup.rb
+Merb::Authentication.user_class.class_eval{ 
+  include Merb::Authentication::Mixins::SaltedUser
+  include Merb::Authentication::Mixins::ActivatedUser
+  include Merb::Authentication::Mixins::UserBelongsToSite # <-- this one
+ }
+</code></pre>
+
+_Don't forget to migrate your database schema with rake db:autoupgrade or rake db:automigrate_
+
+
+4. Setup @current_site value. I haven't worked out how to make it automatically accessible yet so for now I just paste the following into my app's application.rb file.
+<pre><code>
+before :get_site
+def get_site
+  # uses @current_site to create pages under appropriate site like @current_site.pages.new
+  # if there is a subdomain then fetch from subdomain, otherwise fetch from domain
+  if request.first_subdomain != nil
+    @current_site = Site.first(:subdomain => request.first_subdomain)
+  else
+    @current_site = Site.first(:domain => request.domain)
+  end
+end
+</pre></code>
+
+
+Check out the video. <a href="http://scottmotte.github.com/merb-auth-slice-multisite/">How to install merb-auth-slice-multisite in your application.</a>
+
+
+h2. Additional details:
+
+Schema/Migrations. The mixin requires some fields to be in-place in your user model. Where needed include these in your migrations.
+<pre><code># Relationships/Associations
+belongs_to :site
+property :site_id, Integer
+validates_is_unique :login, :scope => :site_id
+</code></pre>
+
+Site model. You're probably wondering where the heck is the site model. It's in the slice. You can override it by running one of the rake tasks or you can create your own site.rb model and add additional fields. For example, if you have pages under a site, you might do something like:
+<pre><code># site.rb
+class Site
+  has n, :pages, :order => [:position.asc]
+end
+</code></pre>
+
+@current_site. You can use @current_site in your controllers like so:
+<pre><code>
+class Pages < Application
+  # provides :xml, :yaml, :js
+
+  def index
+    @pages = @current_site.pages.all
+    display @pages
+  end
+
+  def show(id)
+    @page = @current_site.pages.get(id)
+    raise NotFound unless @page
+    display @page
+  end
+
+end # Pages	
+</pre></code>
+
+
+h2. Assumptions
+
+* works for subdomains (i.e. coolcars.yourapp.com) or for domains routed to your application via your server (i.e. coolcars.com). see lines 40-55 in lib/merb-auth-slice-multisite.rb and lib/merb-auth-slice-multisite/mixins/user_belongs_to_site/dm_user_belongs_to_site.rb for details
+* merb only
+* merb-auth-core dependency
+* merb-auth-more dependency
+* *only supports datamapper so far* (help me extend it! fork the project and request me to pull)
+* A site has n (has_many) users. A user belongs_to a site.
+* You can have multiple users with the same username and password as long as they each belong_to a different site. For example, there can be an admin user with the credentials { :login => 'admin', :email => 'admin@example.org', :site_id => 1} and an admin user with the credentials { :login => 'admin', :email => 'admin@example.org', :site_id => 66}. As long as the site_id is different then it is ok. This allows more freedom when your users want to setup multiple sites. 
+
+
+h2. How does it work?
+
+When logging in the "user" object found by merb-auth-core will be asked whether the user's site_id matches the id of the current_site. It user merb-auth's after_authentication method to do this. 
+
+The current_site is queried by using a model lookup off the request variable.
+
+
+h2. Rake tasks   
+
+To see all available tasks for MerbAuthSliceMultisite run:
+
+rake -T slices:merb-auth-slice-multisite
