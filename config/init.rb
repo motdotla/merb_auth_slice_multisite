@@ -20,6 +20,11 @@
 # application, which in turn can override or finetune the slice implementation
 # code and views.
 #
+require 'config/dependencies.rb'
+ 
+use_orm :datamapper
+use_test :rspec
+use_template_engine :erb
 
 Merb::Config.use do |c|
 

@@ -43,6 +43,10 @@ Spec::Runner.configure do |config|
   config.include(Merb::Test::RouteHelper)
   config.include(Merb::Test::ControllerHelper)
   config.include(Merb::Test::SliceHelper)
+  
+  config.before(:all) do
+    DataMapper.auto_migrate! if Merb.orm == :datamapper
+  end
 end
 
 # You can add your own helpers here
@@ -56,3 +60,33 @@ Merb::Test.add_helpers do
     Merb::Router.reset! if standalone?
   end
 end
+
+# =============================================================================
+# SITE STUFF
+# =============================================================================
+def valid_site_attributes(options = {})
+  {
+    :domain => 'http://www.example.org',
+    :subdomain => 'example',
+    :id => 1
+  }.merge(options)
+end
+
+def valid_second_site_attributes(options = {})
+  {
+    :domain => 'http://www.example2.org',
+    :subdomain => 'example2',
+    :active => true,
+    :id => 2
+  }.merge(options)
+end
+
+def valid_third_site_attributes(options = {})
+  {
+    :domain => 'http://www.example3.org',
+    :subdomain => 'example3',
+    :active => true,
+    :id => 3
+  }.merge(options)
+end
+
