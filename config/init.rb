@@ -26,8 +26,38 @@ use_orm :datamapper
 use_test :rspec
 use_template_engine :erb
 
-Merb::Config.use do |c|
 
+# borrowed from http://github.com/ck/merb-auth-slice-activation/
+Merb::BootLoader.before_app_loads do
+  require "datamapper"
+  DataMapper.setup(:default, "sqlite3::memory:")
+  
+  class User
+    include DataMapper::Resource
+    include Merb::Authentication::Mixins::UserBelongsToSite
+ 
+    property :id,    Serial
+    property :email, String
+    property :login, String
+  end
+ 
+  class Merb::Authentication
+    def self.user_class
+      ::User
+    end
+ 
+    def store_user(user)
+      return nil if user.nil?
+      user.login
+    end
+    def fetch_user(user_id)
+      User.first(:login => login)
+    end
+  end
+end
+
+
+Merb::Config.use do |c|
   # Sets up a custom session id key which is used for the session persistence
   # cookie name.  If not specified, defaults to '_session_id'.
   # c[:session_id_key] = '_session_id'
@@ -44,5 +74,4 @@ Merb::Config.use do |c|
   # When running a slice standalone, you're usually developing it,
   # so enable template reloading by default.
   c[:reload_templates] = true
-  
 end

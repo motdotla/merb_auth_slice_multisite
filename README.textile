@@ -11,11 +11,11 @@ h2. Instructions for installation:
 1. Add github as a gem source & install
 <pre><code>
 	gem sources -a http://gems.github.com
-	sudo gem install scottmotte-merb-auth-slice-multisite
+	sudo gem install scottmotte-merb_auth_slice_multisite
 </code></pre>
 
 2. Setup your application to use the gem.* Add the following to the end of dependencies.rb.
-<pre><code>dependency "scottmotte-merb-auth-slice-multisite", :require_as => 'merb-auth-slice-multisite'</code></pre>
+<pre><code>dependency "scottmotte-merb_auth_slice_multisite", :require_as => 'merb_auth_slice_multisite'</code></pre>
 
 3. Add in mixin. In your user model or in merb/merb-auth/setup.rb add the mixin 
 include Merb::Authentication::Mixins::UserBelongsToSite and then migrate your database.
@@ -51,7 +51,7 @@ end
 </pre></code>
 
 
-Check out the video. <a href="http://scottmotte.github.com/merb-auth-slice-multisite/">How to install merb-auth-slice-multisite in your application.</a>
+Check out the video. <a href="http://scottmotte.github.com/merb_auth_slice_multisite/">How to install merb_auth_slice_multisite in your application.</a>
 
 
 h2. Additional details:
@@ -92,7 +92,7 @@ end # Pages
 
 h2. Assumptions
 
-* works for subdomains (i.e. coolcars.yourapp.com) or for domains routed to your application via your server (i.e. coolcars.com). see lines 40-55 in lib/merb-auth-slice-multisite.rb and lib/merb-auth-slice-multisite/mixins/user_belongs_to_site/dm_user_belongs_to_site.rb for details
+* works for subdomains (i.e. coolcars.yourapp.com) or for domains routed to your application via your server (i.e. coolcars.com). see lines 40-55 in lib/merb_auth_slice_multisite.rb and lib/merb_auth_slice_multisite/mixins/user_belongs_to_site/dm_user_belongs_to_site.rb for details
 * merb only
 * merb-auth-core dependency
 * merb-auth-more dependency
@@ -112,4 +112,4 @@ h2. Rake tasks
 
 To see all available tasks for MerbAuthSliceMultisite run:
 
-rake -T slices:merb-auth-slice-multisite
+rake -T slices:merb_auth_slice_multisite

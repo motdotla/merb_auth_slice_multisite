@@ -1,8 +1,11 @@
 require 'rubygems'
 require 'rake'
 require 'rake/gempackagetask'
+require 'spec/rake/spectask'
 require 'merb-core'
 require 'merb-core/tasks/merb'
+require 'merb-core/test/tasks/spectasks'
+
 
 begin
   require 'jeweler'
@@ -55,8 +58,6 @@ Rake::RDocTask.new do |rdoc|
 end
 
 
-require 'spec/rake/spectask'
-require 'merb-core/test/tasks/spectasks'
 desc 'Default: run spec examples'
 task :default => 'spec'
 
