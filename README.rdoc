@@ -1,0 +1,7 @@
+= merb_auth_slice_multisite
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 scottmotte. See LICENSE for details.
