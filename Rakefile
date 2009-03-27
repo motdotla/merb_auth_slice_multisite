@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "merb_auth_slice_multisite"
-    gem.summary = %Q{first try with jeweler}
+    gem.summary = %Q{add multisite/subdomain functionality to your merb app on top of merb-auth}
     gem.email = "scott@scottmotte.com"
     gem.homepage = "http://github.com/scottmotte/merb_auth_slice_multisite"
     gem.authors = ["scottmotte"]
