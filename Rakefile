@@ -15,6 +15,7 @@ begin
     gem.email = "scott@scottmotte.com"
     gem.homepage = "http://github.com/scottmotte/merb_auth_slice_multisite"
     gem.authors = ["scottmotte"]
+    gem.files = FileList["[A-Z]*.*", "{bin,generators,lib,spec,app,config,public,stubs}/**/*"]
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
