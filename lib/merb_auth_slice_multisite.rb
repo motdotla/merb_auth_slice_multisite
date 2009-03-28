@@ -3,6 +3,10 @@ if defined?(Merb::Plugins)
   $:.unshift File.dirname(__FILE__)
 
   dependency 'merb-slices', :immediate => true
+  dependency 'merb-auth-core'
+  dependency 'merb-auth-more'
+  require(File.expand_path(File.dirname(__FILE__) / "merb_auth_slice_multisite" / "mixins") / "user_belongs_to_site")
+  
   Merb::Plugins.add_rakefiles "merb_auth_slice_multisite/merbtasks", "merb_auth_slice_multisite/slicetasks", "merb_auth_slice_multisite/spectasks"
 
   # Register the Slice for the current host application

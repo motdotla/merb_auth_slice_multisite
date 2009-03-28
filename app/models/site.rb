@@ -7,7 +7,7 @@ class Site
   property :subdomain, String, :nullable => :false, :length => (1..40), :unique => true, :format => /^[a-zA-Z0-9\-]*?$/
   
   # Relationships/Associates
-  # has n, :users, :order => [:login.asc] # put this in your own site.rb model
+  has n, :users, :order => [:login.asc] # put this in your own site.rb model
   
   # Validations
   validates_with_method :check_subdomain

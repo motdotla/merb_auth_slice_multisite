@@ -2,6 +2,8 @@ require 'rubygems'
 require 'merb-core'
 require 'merb-slices'
 require 'spec'
+require 'dm-core'
+require 'dm-validations'
 
 # Add merb_auth_slice_multisite.rb to the search path
 Merb::Plugins.config[:merb_slices][:auto_register] = true
@@ -90,3 +92,12 @@ def valid_third_site_attributes(options = {})
   }.merge(options)
 end
 
+# =============================================================================
+# USER STUFF - see init.rb for where this gets spoofed
+# =============================================================================
+def valid_user_attributes(options = {})
+   { :login => 'fred',
+     :email => 'fred@example.com',
+     :site_id => 1
+   }.merge(options)
+ end

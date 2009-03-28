@@ -10,8 +10,9 @@ module Merb
       #  belongs_to :site
       #
       # Added Validations
-      # validates_is_unique :login, :scope => :site_id
-      #
+      #  validates_present :site_id
+      #  validates_is_unique :login, :scope => :site_id
+      #  validates_is_unique :email, :scope => :site_id
       #
       # To use it simply require it and include it into your user class.
       #

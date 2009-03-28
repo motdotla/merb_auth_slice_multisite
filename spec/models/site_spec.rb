@@ -71,7 +71,6 @@ describe Site do
   end
     
   it "should respond to users" do
-    pending
     @site.save
     @site.should respond_to(:users)
   end

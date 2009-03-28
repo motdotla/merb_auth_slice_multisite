@@ -60,4 +60,3 @@ end
 
 desc 'Default: run spec examples'
 task :default => 'spec'
-

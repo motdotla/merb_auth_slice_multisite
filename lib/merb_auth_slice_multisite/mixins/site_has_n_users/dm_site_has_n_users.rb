@@ -1,7 +1,7 @@
 module Merb
   class Authentication
     module Mixins
-      module UserBelongsToSite
+      module SiteHasNUsers
         module DMClassMethods
           def self.extended(base)
             base.class_eval do

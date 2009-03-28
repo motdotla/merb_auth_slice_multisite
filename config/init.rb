@@ -20,16 +20,15 @@
 # application, which in turn can override or finetune the slice implementation
 # code and views.
 #
+require(File.join(File.expand_path(File.dirname(__FILE__)),"..","lib","merb_auth_slice_multisite"))
+
 require 'config/dependencies.rb'
- 
 use_orm :datamapper
 use_test :rspec
 use_template_engine :erb
 
-
 # borrowed from http://github.com/ck/merb-auth-slice-activation/
 Merb::BootLoader.before_app_loads do
-  require "datamapper"
   DataMapper.setup(:default, "sqlite3::memory:")
   
   class User
