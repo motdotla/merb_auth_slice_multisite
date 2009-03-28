@@ -10,8 +10,8 @@ h2. Instructions for installation:
 
 1. Add github as a gem source & install
 <pre><code>
-	gem sources -a http://gems.github.com
-	sudo gem install scottmotte-merb_auth_slice_multisite
+gem sources -a http://gems.github.com
+sudo gem install scottmotte-merb_auth_slice_multisite
 </code></pre>
 
 2. Setup your application to use the gem.* Add the following to the end of dependencies.rb.
@@ -51,12 +51,12 @@ end
 </pre></code>
 
 
-Check out the video. <a href="http://scottmotte.github.com/merb_auth_slice_multisite/">How to install merb_auth_slice_multisite in your application.</a>
+Check out the video. <a href="http://vimeo.com/2844037">How to install merb_auth_slice_multisite in your application.</a>
 
 
 h2. Additional details:
 
-Schema/Migrations. The mixin requires some fields to be in-place in your user model. Where needed include these in your migrations.
+Schema/Migrations. The mixin adds some fields to your user model. Where needed include these in your migrations if you are using migrations.
 <pre><code># Relationships/Associations
 belongs_to :site
 property :site_id, Integer
