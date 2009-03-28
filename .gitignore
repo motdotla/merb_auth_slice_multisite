@@ -26,3 +26,4 @@ gems/specifications/*
 merb_profile_results
 bin/*
 tasks/*
+gems/*
