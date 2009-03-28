@@ -75,4 +75,9 @@ describe Site do
     @site.should respond_to(:users)
   end
   
+  it "should have a full created_at field after save" do
+    @site.save
+    @site.created_at.should_not be_nil
+  end
+  
 end

@@ -1,10 +1,13 @@
 class Site
   include DataMapper::Resource
+  include DataMapper::Timestamp
   
   # Schema
   property :id, Serial
   property :domain, String, :nullable => :false, :length => (1..40), :unique => true, :format => /(\.[a-z]{2,4})$/
   property :subdomain, String, :nullable => :false, :length => (1..40), :unique => true, :format => /^[a-zA-Z0-9\-]*?$/
+  property :created_at, DateTime
+  property :updated_at, DateTime
   
   # Relationships/Associates
   has n, :users, :order => [:login.asc]
