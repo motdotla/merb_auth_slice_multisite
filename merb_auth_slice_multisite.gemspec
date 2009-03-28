@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{merb_auth_slice_multisite}
-  s.version = "0.2.4"
+  s.version = "0.2.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["scottmotte"]
