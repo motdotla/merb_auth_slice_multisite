@@ -4,7 +4,6 @@ class Site
   
   # Schema
   property :id, Serial
-  property :domain, String, :nullable => :false, :length => (1..40), :unique => true, :format => /(\.[a-z]{2,4})$/
   property :subdomain, String, :nullable => :false, :length => (1..40), :unique => true, :format => /^[a-zA-Z0-9\-]*?$/
   property :created_at, DateTime
   property :updated_at, DateTime
@@ -21,15 +20,6 @@ class Site
       [false, "Subdomain '#{self.subdomain}' is reserved."]
     else
       true
-    end
-  end
-  
-  # Hooks
-  before :valid?, :remove_http_and_www
-  def remove_http_and_www
-    if domain
-      domain.gsub!('http://', '')
-      domain.gsub!('www.', '')
     end
   end
   

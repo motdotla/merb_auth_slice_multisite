@@ -68,27 +68,21 @@ end
 # =============================================================================
 def valid_site_attributes(options = {})
   {
-    :domain => 'http://www.example.org',
-    :subdomain => 'example',
-    :id => 1
+    :subdomain => 'example'
   }.merge(options)
 end
 
 def valid_second_site_attributes(options = {})
   {
-    :domain => 'http://www.example2.org',
     :subdomain => 'example2',
-    :active => true,
-    :id => 2
+    :active => true
   }.merge(options)
 end
 
 def valid_third_site_attributes(options = {})
   {
-    :domain => 'http://www.example3.org',
     :subdomain => 'example3',
-    :active => true,
-    :id => 3
+    :active => true
   }.merge(options)
 end
 
