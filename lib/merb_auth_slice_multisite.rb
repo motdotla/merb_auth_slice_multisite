@@ -50,16 +50,6 @@ if defined?(Merb::Plugins)
             else
               user
             end
-          else
-            current_site = Site.first(:domain => request.domain)
-            if user.site_id != current_site.id
-              errors = request.session.authentication.errors
-              errors.clear!
-              errors.add("Label", "User does not belong to this site.")
-              nil
-            else
-              user
-            end
           end
         end
         

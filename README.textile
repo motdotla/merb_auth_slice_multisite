@@ -41,12 +41,8 @@ _Don't forget to migrate your database schema with rake db:autoupgrade or rake d
 before :get_site
 def get_site
   # uses @current_site to create pages under appropriate site like @current_site.pages.new
-  # if there is a subdomain then fetch from subdomain, otherwise fetch from domain
-  if request.first_subdomain != nil
-    @current_site = Site.first(:subdomain => request.first_subdomain)
-  else
-    @current_site = Site.first(:domain => request.domain)
-  end
+  @current_site = Site.first(:subdomain => request.first_subdomain)
+  raise NotFound unless @current_site
 end
 </pre></code>
 
