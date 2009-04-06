@@ -22,7 +22,6 @@ dependency "merb-param-protection", merb_gems_version
 dependency "merb-exceptions", merb_gems_version
 
 dependency "data_objects", do_gems_version
-dependency "do_mysql", do_gems_version # If using another database, replace this
 dependency "dm-core", dm_gems_version         
 dependency "dm-aggregates", dm_gems_version   
 dependency "dm-migrations", dm_gems_version   
