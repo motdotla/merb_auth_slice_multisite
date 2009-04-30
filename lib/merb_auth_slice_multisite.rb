@@ -12,6 +12,13 @@ if defined?(Merb::Plugins)
   # Register the Slice for the current host application
   Merb::Slices::register(__FILE__)
   
+  # Register the custom strategy so that this slice may utilize it
+  # from http://github.com/wycats/merb/blob/784ac7d71780d1a7cfb9152ba4cb0
+  # e18a990ab7a/merb-auth/merb-auth-more/lib/merb-auth-more.rb
+  basic_path = File.expand_path(File.dirname(__FILE__)) / "merb-auth-more" / "strategies" / "multisite"
+  
+  Merb::Authentication.register(:multisite_password_form, basic_path / "multisite_password_form.rb")
+  
   # Slice configuration - set this in a before_app_loads callback.
   # By default a Slice uses its own layout, so you can swicht to 
   # the main application layout or no layout at all if needed.
@@ -36,22 +43,28 @@ if defined?(Merb::Plugins)
     
     # Initialization hook - runs before AfterAppLoads BootLoader
     def self.init
+      require 'merb-auth-more/mixins/redirect_back'      
+      unless MerbAuthSliceMultisite[:no_default_strategies]
+        ::Merb::Authentication.activate!(:default_password_form)
+      end
       
-        # Actually check if the user belongs to the site 
-        ::Merb::Authentication.after_authentication do |user, request, params|
-          # clean this up somehow
-          if request.first_subdomain != nil
-            current_site = Site.first(:subdomain => request.first_subdomain)
-            if user.site_id != current_site.id
-              errors = request.session.authentication.errors
-              errors.clear!
-              errors.add("Label", "User does not belong to this site.")
-              nil
-            else
-              user
-            end
-          end
-        end
+      
+        # from 0.3.2 version of merb_auth_slice_multisite
+        # # Actually check if the user belongs to the site 
+        # ::Merb::Authentication.after_authentication do |user, request, params|
+        #   # clean this up somehow
+        #   if request.first_subdomain != nil
+        #     current_site = Site.first(:subdomain => request.first_subdomain)
+        #     if user.site_id != current_site.id
+        #       errors = request.session.authentication.errors
+        #       errors.clear!
+        #       errors.add("Label", "User does not belong to this site.")
+        #       nil
+        #     else
+        #       user
+        #     end
+        #   end
+        # end
         
     end
     
@@ -73,12 +86,10 @@ if defined?(Merb::Plugins)
     # @note prefix your named routes with :merb_auth_slice_multisite_
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
-      # # example of a named route
-      # scope.match('/index(.:format)').to(:controller => 'main', :action => 'index').name(:index)
-      # # the slice is mounted at /merb_auth_slice_multisite - note that it comes before default_routes
-      # scope.match('/').to(:controller => 'main', :action => 'index').name(:home)
-      # # enable slice-level default routes by default
-      # scope.default_routes
+      # example of a named route
+      scope.match("/login", :method => :get ).to(:controller => "/exceptions",  :action => "unauthenticated").name(:login)
+      scope.match("/login", :method => :put ).to(:controller => "sessions",     :action => "update"         ).name(:perform_login)
+      scope.match("/logout"                 ).to(:controller => "sessions",     :action => "destroy"        ).name(:logout)
     end
     
   end
