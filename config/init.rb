@@ -27,7 +27,11 @@ use_orm :datamapper
 use_test :rspec
 use_template_engine :erb
 
-# borrowed from http://github.com/ck/merb-auth-slice-activation/
+# Setup the required configuration for the slice
+Merb::Slices::config[:merb_auth_slice_multisite][:send_password_from_email] = "no-reply@yourapp.com"
+Merb::Slices::config[:merb_auth_slice_multisite][:domain] = "example.com"
+
+
 Merb::BootLoader.before_app_loads do
   DataMapper.setup(:default, "sqlite3::memory:")
   
@@ -38,6 +42,9 @@ Merb::BootLoader.before_app_loads do
     property :id,    Serial
     property :email, String
     property :login, String
+    property :password, String
+    
+    belongs_to :site
   end
  
   class Merb::Authentication
