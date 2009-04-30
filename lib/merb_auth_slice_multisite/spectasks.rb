@@ -1,3 +1,4 @@
+require "spec/rake/spectask"
 namespace :slices do
   namespace :merb_auth_slice_multisite do
       
