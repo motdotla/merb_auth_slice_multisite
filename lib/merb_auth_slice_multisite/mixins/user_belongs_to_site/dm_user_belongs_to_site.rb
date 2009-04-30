@@ -9,8 +9,8 @@ module Merb
               property :site_id, Integer
               # Validations
               validates_present :site_id
-              validates_is_unique :login
-              validates_is_unique :email
+              validates_is_unique :login, :scope => :site_id
+              validates_is_unique :email, :scope => :site_id
               # Relationships/Associations
               belongs_to :site
             end # base.class_eval
