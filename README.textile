@@ -76,6 +76,14 @@ def get_site
 end
 </code></pre>
 
+8. Configure forgot_password functionality. Add the following into merb/merb-auth/setup.rb
+<pre><code># To change the parameter names for the password or login field you may set either of these two options
+#
+# Merb::Plugins.config[:"merb-auth"][:login_param]    = :email 
+# Merb::Plugins.config[:"merb-auth"][:password_param] = :my_password_field_name
+Merb::Slices::config[:merb_auth_slice_multisite][:send_password_from_email] = "no-reply@yourapp.com"
+Merb::Slices::config[:merb_auth_slice_multisite][:domain] = "example.com"</code></pre>
+
 
 h2. Additional details:
 

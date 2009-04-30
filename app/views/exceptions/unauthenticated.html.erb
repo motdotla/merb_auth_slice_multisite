@@ -1,7 +1,6 @@
-<h3>Login</h3>
-
-<div>
-
+<div id="login">
+	<h3>Login</h3>
+	
   <%= error_messages_for session.authentication %>
   <% @login_param = Merb::Authentication::Strategies::Multisite::Base.login_param %>
   <% @password_param = Merb::Authentication::Strategies::Multisite::Base.password_param %>
@@ -13,9 +12,9 @@
 	@current_site = Site.first(:subdomain => request.first_subdomain)
 	%>
   
-	<form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="POST" accept-charset="utf-8">
+	<form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="POST" accept-charset="utf-8" id="login_form">
 		<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
-	  <input type="hidden" name="_method" value="PUT" />
+		<input type="hidden" name="_method" value="PUT" />
 	  <div class="formRow">
 	    <label><%= @login_param.to_s.capitalize %>: <input type="text" name="<%= @login_param.to_s %>" value="" id="<%= @login_param.to_s %>"></label>
 	  </div> <!-- close: formRow -->
@@ -27,6 +26,18 @@
 	  </div> <!-- close: formRow -->
 		<div class="formRow">
 	    <a href="/forgot_password">Forgot password</a>
+	  </div> <!-- close: formRow -->
+	</form>
+</div>
+
+<div id="forgot_password">
+	<form action="/send_password" method="post" accept-charset="utf-8" id="send_password_form">
+		<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+		<div class="formRow">
+	    <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>: <input type="text" class="text" name="<%= @login_param.to_s %>" id="<%= @login_param.to_s %>" /></label>
+	  </div> <!-- close: formRow -->
+		<div class="formRow">
+			<input type="submit" name="Reset" value="Reset password" id="Reset" />
 	  </div> <!-- close: formRow -->
 	</form>
 </div>

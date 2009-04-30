@@ -87,12 +87,10 @@ if defined?(Merb::Plugins)
     # @note prefix your named routes with :merb_auth_slice_multisite_
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
-      # example of a named route
+      scope.match("/send_password", :method => :post).to(:controller => "passwords", :action => "send_password").name(:send_password)
       scope.match("/login", :method => :get ).to(:controller => "/exceptions", :action => "unauthenticated").name(:login)
       scope.match("/login", :method => :put ).to(:controller => "sessions", :action => "update").name(:perform_login)
       scope.match("/logout").to(:controller => "sessions", :action => "destroy").name(:logout)
-      scope.match("/forgot_password", :method => :get).to(:controller => "passwords", :action => "forgot_password").name(:forgot_password)
-      scope.match("/forgot_password", :method => :post).to(:controller => "passwords", :action => "send_password").name(:send_password)
     end
     
   end
