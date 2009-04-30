@@ -2,13 +2,12 @@ h1. MerbAuthSliceMultisite
 
 This slice setups multisite capabilities in your merb application with subdomains (i.e. coolcars.yourapp.com) and an authentication check.
 
-Noteworthy: This multisite gem validates the usernames by the scope of the subdomain. Meaning someone could create another subdomain site using the same username and password - similar to how blinksale works. This is how I prefer things. It saves the hassle of a has_and_belongs_to_many relationship and the extra signup hoops you have to go through as a user if you want to create multiple accounts - lighthouse is an example of this.
+Noteworthy: This multisite gem validates the usernames by the scope of the subdomain. This means someone can create another subdomain site using the same username and password, but technically it will be a new user in the users table - similar to how blinksale works. This is how I prefer things. It saves the hassle of a has_and_belongs_to_many relationship and the extra signup hoops you have to go through as a user if you want to create multiple accounts - lighthouse is an example of this.
 
 h2. Instructions for installation:
 
 1. Add github as a gem source & install
-<pre><code>
-gem sources -a http://gems.github.com
+<pre><code>gem sources -a http://gems.github.com
 sudo gem install scottmotte-merb_auth_slice_multisite
 </code></pre>
 
@@ -75,7 +74,7 @@ def get_site
   @current_site = Site.first(:subdomain => request.first_subdomain)
   raise NotFound unless @current_site
 end
-</pre></code>
+</code></pre>
 
 
 h2. Additional details:
@@ -128,9 +127,7 @@ h2. Assumptions
 
 h2. How does it work?
 
-When logging in the "user" object found by merb-auth-core will be asked whether the user's site_id matches the id of the current_site. It user merb-auth's after_authentication method to do this. 
-
-The current_site is queried by using a model lookup off the request variable.
+When logging in the "user" object found by merb-auth-core will be asked whether the user's login, password, and site_id match. It matches the site_id against the @current_site.id, and the login/password from the standard form fields.
 
 
 h2. Rake tasks   
