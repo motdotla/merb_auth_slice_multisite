@@ -11,10 +11,9 @@ class MerbAuthSliceMultisite::Passwords <  MerbAuthSliceMultisite::Application
       @user.password = @user.password_confirmation = new_generated_password     
       send_mail(MerbAuthSliceMultisite::SendPasswordMailer, :send_password, { :subject => (MerbAuthSliceMultisite[:send_password_subject] || "Forgetful? :)"), :from => from, :to => @user.email }, { :user => @user })
       @user.save
-      redirect "/", :message => {:notice => "Password sent".t}
+      redirect "/", :message => {:notice => "Password sent. Check your email."}
     else
-      message[:error] = "User with #{@login_param} \"%s\" not found".t(params[@login_param].freeze)
-      render :forgot_password
+      redirect "/", :message => {:error => "User with #{@login_param} \"%s\" not found".t(params[@login_param].freeze)}
     end
   end
   
