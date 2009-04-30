@@ -12,13 +12,6 @@ if defined?(Merb::Plugins)
   # Register the Slice for the current host application
   Merb::Slices::register(__FILE__)
   
-  # Register the custom strategy so that this slice may utilize it
-  # from http://github.com/wycats/merb/blob/784ac7d71780d1a7cfb9152ba4cb0
-  # e18a990ab7a/merb-auth/merb-auth-more/lib/merb-auth-more.rb
-  basic_path = File.expand_path(File.dirname(__FILE__)) / "merb-auth-more" / "strategies" / "multisite"
-  
-  Merb::Authentication.register(:multisite_password_form, basic_path / "multisite_password_form.rb")
-  
   # Slice configuration - set this in a before_app_loads callback.
   # By default a Slice uses its own layout, so you can swicht to 
   # the main application layout or no layout at all if needed.
@@ -45,7 +38,14 @@ if defined?(Merb::Plugins)
     def self.init
       require 'merb-auth-more/mixins/redirect_back'      
       unless MerbAuthSliceMultisite[:no_default_strategies]
-        ::Merb::Authentication.activate!(:default_password_form)
+        # Register the custom strategy so that this slice may utilize it
+        # from http://github.com/wycats/merb/blob/784ac7d71780d1a7cfb9152ba4cb0
+        # e18a990ab7a/merb-auth/merb-auth-more/lib/merb-auth-more.rb
+        basic_path = File.expand_path(File.dirname(__FILE__)) / "merb-auth-more" / "strategies" / "multisite"
+        Merb::Authentication.register(:multisite_password_form, basic_path / "multisite_password_form.rb")
+        
+        # activate the strategy
+        ::Merb::Authentication.activate!(:multisite_password_form)
       end
       
       
