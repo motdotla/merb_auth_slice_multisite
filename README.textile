@@ -1,10 +1,8 @@
 h1. MerbAuthSliceMultisite
 
-This slice setups multisite capabilities in your merb application with an authentication check. 
+This slice setups multisite capabilities in your merb application with subdomains (i.e. coolcars.yourapp.com) and an authentication check.
 
-It works for subdomains (i.e. coolcars.yourapp.com) or for domains routed to your application via your server (i.e. coolcars.com). 
-
-It has a check to make a user to the site he's trying to login to. If the user does not match than authentication fails.
+Noteworthy: This multisite gem validates the usernames by the scope of the subdomain. Meaning someone could create another subdomain site using the same username and password - similar to how blinksale works. This is how I prefer things. It saves the hassle of a has_and_belongs_to_many relationship and the extra signup hoops you have to go through as a user if you want to create multiple accounts - lighthouse is an example of this.
 
 h2. Instructions for installation:
 
@@ -17,13 +15,18 @@ sudo gem install scottmotte-merb_auth_slice_multisite
 2. Setup your application to use the gem.* Add the following to the end of dependencies.rb.
 <pre><code>dependency "scottmotte-merb_auth_slice_multisite", :require_as => 'merb_auth_slice_multisite'</code></pre>
 
-3. Add in mixin. In your user model or in merb/merb-auth/setup.rb add the mixin 
+3. Remove default merb-auth-slice-password in dependencies.rb
+<pre></code><strike>dependency "merb-auth-slice-password"</strike></code></pre>
+(merb_auth_slice_multisite is now standalone. it does not depend on merb-auth-slice-password)
+
+4. Add in mixin. In your user model or in merb/merb-auth/setup.rb add the mixin 
 include Merb::Authentication::Mixins::UserBelongsToSite and then migrate your database.
 <pre><code>
 # in model
 class User
 	include Merb::Authentication::Mixins::UserBelongsToSite
 end
+
 
 # or as I prefer in merb/merb-auth/setup.rb
 Merb::Authentication.user_class.class_eval{ 
@@ -35,19 +38,44 @@ Merb::Authentication.user_class.class_eval{
 
 _Don't forget to migrate your database schema with rake db:autoupgrade or rake db:automigrate_
 
+5. Setup strategies.rb - make sure it looks like the following. merb_auth_slice_multisite uses its own custom strategy so including the others will mess things up.
+<pre><code>Merb::Slices::config[:"merb_auth_slice_multisite"][:no_default_strategies] = false</code></pre>
 
-4. Setup @current_site value. I haven't worked out how to make it automatically accessible yet so for now I just paste the following into my app's application.rb file.
+As an aside, here's what an example router might look like using the slice to support subdomains. See how it checks for subdomain equaling www or nil and routes to the main site. And then everything else goes to the pages controller or users controller that has a subdomain. All of the controller actions then user @current_site.pages.all and @current_site.users.all instead of just User.all & Page.all. Starting to come together in your mind :)
+
+<pre><code>
+	Merb.logger.info("Compiling routes...")
+	Merb::Router.prepare do
+
+	  # Brochure site - equal to site_url from settings.yml and has no first_subdomain else do below
+	  match(:first_subdomain =>  /^(www)*$/) do
+	    resources :sites, :collection => { :changed_on_spreedly => :post }
+	    resources :static
+	    match('/signup').to(:controller => 'sites', :action => 'new')
+	    match('/').to(:controller => 'static', :action => 'index')
+	  end
+
+	  # Subdomain sites
+	  resources :pages
+	  resources :users, :identify => :login
+
+	  match('/').to(:controller => 'pages', :action => 'index')
+	  slice(:merb_auth_slice_multisite, :name_prefix => nil, :path_prefix => "") # /login, /logout
+	end
+</pre></code>
+
+6. Add the slice's routes to your router
+<pre><code>slice(:merb_auth_slice_multisite, :name_prefix => nil, :path_prefix => "")</code></pre>
+
+7. Setup @current_site value. I haven't worked out how to make it automatically accessible yet so for now paste the following into your app's application.rb file.
 <pre><code>
 before :get_site
 def get_site
-  # uses @current_site to create pages under appropriate site like @current_site.pages.new
+  # uses @current_site - for example, to create pages under current site do @current_site.pages.new
   @current_site = Site.first(:subdomain => request.first_subdomain)
   raise NotFound unless @current_site
 end
 </pre></code>
-
-
-Check out the video. <a href="http://vimeo.com/2844037">How to install merb_auth_slice_multisite in your application.</a>
 
 
 h2. Additional details:
@@ -57,9 +85,10 @@ Schema/Migrations. The mixin adds some fields to your user model. Where needed i
 belongs_to :site
 property :site_id, Integer
 validates_is_unique :login, :scope => :site_id
+validates_is_unique :email, :scope => :site_id
 </code></pre>
 
-Site model. You're probably wondering where the heck is the site model. It's in the slice. You can override it by running one of the rake tasks or you can create your own site.rb model and add additional fields. For example, if you have pages under a site, you might do something like:
+Site model. You're probably wondering where the heck is the site model. It's in the slice. You can override it by running one of the rake tasks or you can create your own site.rb model and add additional fields which is what I do. For example, if you have pages under a site, you might do something like:
 <pre><code># site.rb
 class Site
   has n, :pages, :order => [:position.asc]
@@ -88,7 +117,7 @@ end # Pages
 
 h2. Assumptions
 
-* works for subdomains (i.e. coolcars.yourapp.com) or for domains routed to your application via your server (i.e. coolcars.com). see lines 40-55 in lib/merb_auth_slice_multisite.rb and lib/merb_auth_slice_multisite/mixins/user_belongs_to_site/dm_user_belongs_to_site.rb for details
+* works for subdomains (i.e. coolcars.yourapp.com) 
 * merb only
 * merb-auth-core dependency
 * merb-auth-more dependency
