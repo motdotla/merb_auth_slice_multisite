@@ -13,30 +13,31 @@
     Login
   </h3>
 	<%= error_messages_for session.authentication %>
-  <form action="/login" method="post" accept-charset="utf-8" id="login_form" name="login_form">
-    <input type="hidden" name="site_id" value="58519132" id="site_id"> <input type="hidden" name="_method" value="PUT">
-    <div class="formRow">
-      <label>Login: <input type="text" name="login" value="" id="login"></label>
-    </div>
-    <div class="formRow">
-      <label>Password:<input type="password" name="password" value="" id="password"></label>
-    </div>
-    <div class="formRow">
-      <input type="submit" name="Submit" value="Log In" id="Submit">
-    </div>
-    <div class="formRow">
-      <a href="#" id="forgot_password_link" name="forgot_password_link">Forgot password</a>
-    </div>
-  </form>
+	<form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="POST" accept-charset="utf-8" id="login_form">
+		<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+		<input type="hidden" name="_method" value="PUT" />
+	  <div class="formRow">
+	    <label><%= @login_param.to_s.capitalize %>: <input type="text" name="<%= @login_param.to_s %>" value="" id="<%= @login_param.to_s %>"></label>
+	  </div> <!-- close: formRow -->
+	  <div class="formRow">
+	    <label><%= @password_param.to_s.capitalize %>:<input type="password" name="<%= @password_param.to_s %>" value="" id="<%= @password_param.to_s %>"></label>
+	  </div> <!-- close: formRow -->
+	  <div class="formRow">
+	    <input type="submit" name="Submit" value="Log In" id="Submit">
+	  </div> <!-- close: formRow -->
+		<div class="formRow">
+	    <a href="#" id="forgot_password_link">Forgot password</a>
+	  </div> <!-- close: formRow -->
+	</form>
 </div>
 <div id="forgot_password_fields">
-  <form action="/send_password" method="post" accept-charset="utf-8" id="send_password_form" name="send_password_form">
-    <input type="hidden" name="site_id" value="58519132" id="site_id">
-    <div class="formRow">
-      <label for="login">Login: <input type="text" class="text" name="forgot_login" id="forgot_login"></label>
-    </div>
-    <div class="formRow">
-      <input type="submit" name="Reset" value="Reset password" id="Reset">
-    </div>
-  </form>
+	<form action="/send_password" method="post" accept-charset="utf-8" id="send_password_form">
+		<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+		<div class="formRow">
+	    <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>: <input type="text" class="text" name="<%= @login_param.to_s %>" id="<%= @login_param.to_s %>" /></label>
+	  </div> <!-- close: formRow -->
+		<div class="formRow">
+			<input type="submit" name="Reset" value="Reset password" id="Reset" />
+	  </div> <!-- close: formRow -->
+	</form>
 </div>
