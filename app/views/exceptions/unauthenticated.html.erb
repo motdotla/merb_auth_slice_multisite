@@ -8,10 +8,9 @@
 @current_site = Site.first(:subdomain => request.first_subdomain)
 %>
 
-<%= error_messages_for session.authentication %>
 <form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="post" id="loginForm">
 	<h3>Login</h3>
-	
+	<%= error_messages_for session.authentication %>
 	<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
 	<input type="hidden" name="_method" value="PUT" />
 	
