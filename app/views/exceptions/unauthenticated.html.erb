@@ -7,37 +7,51 @@
 # but it means I have to add the following duplicate line of code as far as I know.
 @current_site = Site.first(:subdomain => request.first_subdomain)
 %>
- 
-<div id="login_fields">
-  <h3>
-    Login
-  </h3>
-	<%= error_messages_for session.authentication %>
-	<form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="POST" accept-charset="utf-8" id="login_form">
-		<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
-		<input type="hidden" name="_method" value="PUT" />
-	  <div class="formRow">
-	    <label><%= @login_param.to_s.capitalize %>: <input type="text" name="<%= @login_param.to_s %>" value="" id="<%= @login_param.to_s %>"></label>
-	  </div> <!-- close: formRow -->
-	  <div class="formRow">
-	    <label><%= @password_param.to_s.capitalize %>:<input type="password" name="<%= @password_param.to_s %>" value="" id="<%= @password_param.to_s %>"></label>
-	  </div> <!-- close: formRow -->
-	  <div class="formRow">
-	    <input type="submit" name="Submit" value="Log In" id="Submit">
-	  </div> <!-- close: formRow -->
-		<div class="formRow">
-	    <a href="#" id="forgot_password_link">Forgot password</a>
-	  </div> <!-- close: formRow -->
-	</form>
-</div>
-<div id="forgot_password_fields">
-	<form action="/send_password" method="post" accept-charset="utf-8" id="send_password_form">
-		<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
-		<div class="formRow">
-	    <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>: <input type="text" class="text" name="<%= @login_param.to_s %>" id="<%= @login_param.to_s %>" /></label>
-	  </div> <!-- close: formRow -->
-		<div class="formRow">
-			<input type="submit" name="Reset" value="Reset password" id="Reset" />
-	  </div> <!-- close: formRow -->
-	</form>
-</div>
+
+<h3>Login</h3>
+
+<%= error_messages_for session.authentication %>
+<form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="post" id="loginForm">
+	<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+	<input type="hidden" name="_method" value="PUT" />
+	
+  <div id="loginFields" class="fields">
+    <div id="loginElements" class="elements">
+      <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>:</label>
+      <div id="loginElement" class="element">
+				<input type="text" name="<%= @login_param.to_s %>" value="" id="<%= @login_param.to_s %>">
+      </div>
+    </div>
+    <div id="passwordElements" class="elements">
+      <label for="<%= @password_param.to_s %>"><%= @password_param.to_s.capitalize %>:</label>
+      <div id="passwordElement" class="element">
+				<input type="password" name="<%= @password_param.to_s %>" value="" id="<%= @password_param.to_s %>">
+      </div>
+    </div>
+    <div id="loginActions" class="actions">
+      <div id="loginAction" class="action">
+        <input type="submit" name="loginSubmit" value="Log In" id="loginSubmit" />
+      </div>
+      <div id="forgotToggleAction" class="action">
+        <a href="#" id="forgotToggle">Forgot password</a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<form action="<%= slice_url(:merb_auth_slice_multisite, :send_password) %>" method="post" id="forgotForm">
+	<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+  <div id="forgotFields" class="fields">
+    <div id="forgotLoginElements" class="elements">
+      <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>:</label>
+      <div id="forgotLoginElement" class="element">
+				<input type="text" class="text" name="<%= @login_param.to_s %>" id="<%= @login_param.to_s %>" />
+      </div>
+    </div>
+    <div id="forgotLoginActions" class="actions">
+      <div id="forgotLoginAction" class="action">
+        <input type="submit" name="forgotLoginSubmit" value="Reset Password" id="forgotLoginSubmit" />
+      </div>
+    </div>
+  </div>
+</form>
