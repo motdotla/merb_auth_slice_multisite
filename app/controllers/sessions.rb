@@ -17,6 +17,7 @@ class MerbAuthSliceMultisite::Sessions < MerbAuthSliceMultisite::Application
 
   def destroy
     "Add an after filter to do stuff after logout"
+    cookies.delete :auth_token
   end
   
   

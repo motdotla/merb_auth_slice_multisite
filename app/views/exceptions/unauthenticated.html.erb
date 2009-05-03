@@ -28,6 +28,12 @@
 				<input type="password" name="<%= @password_param.to_s %>" value="" id="<%= @password_param.to_s %>">
       </div>
     </div>
+		<div id="remember_meElements" class="elements">
+      <label for="remember_me">Remember me:</label>
+      <div id="remember_meElement" class="element">
+				<input type="checkbox" name="remember_me" value="1" id="remember_me" />
+      </div>
+    </div>
     <div id="loginActions" class="actions">
       <div id="loginAction" class="action">
         <input type="submit" name="loginSubmit" value="Log In" id="loginSubmit" />

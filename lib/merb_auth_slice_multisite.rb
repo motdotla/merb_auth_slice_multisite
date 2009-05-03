@@ -7,6 +7,7 @@ if defined?(Merb::Plugins)
   dependency 'merb-auth-core'
   dependency 'merb-auth-more'
   require(File.expand_path(File.dirname(__FILE__) / "merb_auth_slice_multisite" / "mixins") / "user_belongs_to_site")
+  require(File.expand_path(File.dirname(__FILE__) / "merb-auth-remember-me" / "mixins") / "authenticated_user")
   
   Merb::Plugins.add_rakefiles "merb_auth_slice_multisite/merbtasks", "merb_auth_slice_multisite/slicetasks", "merb_auth_slice_multisite/spectasks"
 
@@ -42,12 +43,28 @@ if defined?(Merb::Plugins)
         # Register the custom strategy so that this slice may utilize it
         # from http://github.com/wycats/merb/blob/784ac7d71780d1a7cfb9152ba4cb0
         # e18a990ab7a/merb-auth/merb-auth-more/lib/merb-auth-more.rb
-        basic_path = File.expand_path(File.dirname(__FILE__)) / "merb-auth-more" / "strategies" / "multisite"
-        Merb::Authentication.register(:multisite_password_form, basic_path / "multisite_password_form.rb")
-        
-        # activate the strategy
+        merb_auth_more_path = File.expand_path(File.dirname(__FILE__)) / "merb-auth-more" / "strategies" / "multisite"
+        merb_auth_remember_me_path = File.expand_path(File.dirname(__FILE__)) / "merb-auth-remember-me" / "strategies"
+        Merb::Authentication.register(:multisite_password_form, merb_auth_more_path / "multisite_password_form.rb")
+        Merb::Authentication.register(:remember_me, merb_auth_remember_me_path / "remember_me.rb")
+        # activate the strategies
         ::Merb::Authentication.activate!(:multisite_password_form)
+        ::Merb::Authentication.activate!(:remember_me)
+        
+        Merb::Authentication.after_authentication do |user,request,params|
+          if params[:remember_me] == "1" 
+            user.remember_me
+            request.cookies.set_cookie(
+              :auth_token, 
+              user.remember_token, 
+              :expires => user.remember_token_expires_at.to_time
+            )
+          end
+          user 
+        end # Merb::Authentication.after_authentication
       end
+      
+
       
       
         # from 0.3.2 version of merb_auth_slice_multisite

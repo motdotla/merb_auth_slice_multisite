@@ -24,6 +24,7 @@ include Merb::Authentication::Mixins::UserBelongsToSite and then migrate your da
 # in model
 class User
 	include Merb::Authentication::Mixins::UserBelongsToSite
+	include Merb::Authentication::Mixins::AuthenticatedUser #for remember me functionality
 end
 
 
@@ -32,6 +33,7 @@ Merb::Authentication.user_class.class_eval{
   include Merb::Authentication::Mixins::SaltedUser
   include Merb::Authentication::Mixins::ActivatedUser
   include Merb::Authentication::Mixins::UserBelongsToSite # <-- this one
+	include Merb::Authentication::Mixins::AuthenticatedUser # <-- and this one
  }
 </code></pre>
 
