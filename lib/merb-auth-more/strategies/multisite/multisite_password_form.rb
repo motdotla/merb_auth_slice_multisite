@@ -56,20 +56,9 @@ class Merb::Authentication
       class Form < Base
         
         def run!
-          
           if (login = request.params[login_param]) && (password = request.params[password_param]) && (site_id = request.params[site_id_param])
-            # see if user exists for the site_id
-            user = user_class.first(login_param => login, site_id_param => site_id)
-            if user
-              # user_class.get(:login)
-              user = user_class.authenticate(login, password)
-              if !user
-                errors = request.session.authentication.errors
-                errors.clear!
-                errors.add(login_param, strategy_error_message)
-              end
-              user
-            else
+            user = user_class.all(site_id_param => site_id).authenticate(login, password)
+            if !user
               errors = request.session.authentication.errors
               errors.clear!
               errors.add(login_param, strategy_error_message)

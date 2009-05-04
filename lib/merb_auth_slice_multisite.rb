@@ -63,27 +63,6 @@ if defined?(Merb::Plugins)
           user 
         end # Merb::Authentication.after_authentication
       end
-      
-
-      
-      
-        # from 0.3.2 version of merb_auth_slice_multisite
-        # # Actually check if the user belongs to the site 
-        # ::Merb::Authentication.after_authentication do |user, request, params|
-        #   # clean this up somehow
-        #   if request.first_subdomain != nil
-        #     current_site = Site.first(:subdomain => request.first_subdomain)
-        #     if user.site_id != current_site.id
-        #       errors = request.session.authentication.errors
-        #       errors.clear!
-        #       errors.add("Label", "User does not belong to this site.")
-        #       nil
-        #     else
-        #       user
-        #     end
-        #   end
-        # end
-        
     end
     
     # Activation hook - runs after AfterAppLoads BootLoader
