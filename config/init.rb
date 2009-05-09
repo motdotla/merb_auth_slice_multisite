@@ -38,6 +38,7 @@ Merb::BootLoader.before_app_loads do
   class User
     include DataMapper::Resource
     include Merb::Authentication::Mixins::UserBelongsToSite
+    include Merb::Authentication::Mixins::AuthenticatedUser
  
     property :id,    Serial
     property :email, String

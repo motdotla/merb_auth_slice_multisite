@@ -98,4 +98,4 @@ def valid_user_attributes(options = {})
      :email => 'fred@example.com',
      :site_id => 1
    }.merge(options)
- end
+end
