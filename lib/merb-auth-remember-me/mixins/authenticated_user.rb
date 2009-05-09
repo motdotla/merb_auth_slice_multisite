@@ -54,7 +54,7 @@ module Merb
         module InstanceMethods
           def remember_token?
             (!remember_token.blank?) && 
-              remember_token_expires_at && (Time.now.utc < remember_token_expires_at.utc)
+              remember_token_expires_at && (Time.now.utc < remember_token_expires_at.to_time)
           end
 
           # These create and unset the fields required for remembering users between browser closes
