@@ -1,0 +1,61 @@
+<% @login_param = Merb::Authentication::Strategies::Multisite::Base.login_param %>
+<% @password_param = Merb::Authentication::Strategies::Multisite::Base.password_param %>
+<% @site_id_param = Merb::Authentication::Strategies::Multisite::Base.site_id_param %>
+<% 
+# make @current_site value. application.rb does not get call 
+# because the authentication is protected at the rack level - which is better, 
+# but it means I have to add the following duplicate line of code as far as I know.
+@current_site = Site.first(:subdomain => request.first_subdomain)
+%>
+
+<%= error_messages_for session.authentication %>
+<form action="<%= slice_url(:merb_auth_slice_multisite, :perform_login) %>" method="post" id="loginForm">
+	<h3>Login</h3>
+	<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+	<input type="hidden" name="_method" value="PUT" />
+	
+  <div id="loginFields" class="fields">
+    <div id="loginElements" class="elements">
+      <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>:</label>
+      <div id="loginElement" class="element">
+				<input type="text" name="<%= @login_param.to_s %>" value="" id="<%= @login_param.to_s %>">
+      </div>
+    </div>
+    <div id="passwordElements" class="elements">
+      <label for="<%= @password_param.to_s %>"><%= @password_param.to_s.capitalize %>:</label>
+      <div id="passwordElement" class="element">
+				<input type="password" name="<%= @password_param.to_s %>" value="" id="<%= @password_param.to_s %>">
+      </div>
+    </div>
+		<div id="remember_meElements" class="elements">
+      <div id="remember_meElement" class="element">
+				<input type="checkbox" name="remember_me" value="1" id="remember_me" /> <label for="remember_me">Remember me</label>
+      </div>
+    </div>
+    <div id="loginActions" class="actions">
+      <div id="loginAction" class="action">
+        <input type="submit" name="loginSubmit" value="Log In" id="loginSubmit" />
+      </div>
+      <div id="forgotToggleAction" class="action">
+        <a href="#" id="forgotToggle">Forgot password</a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<form action="<%= slice_url(:merb_auth_slice_multisite, :send_password) %>" method="post" id="forgotForm">
+	<input type="hidden" name="<%= @site_id_param.to_s %>" value="<%= @current_site.id %>" id="<%= @site_id_param.to_s %>">
+  <div id="forgotFields" class="fields">
+    <div id="forgotLoginElements" class="elements">
+      <label for="<%= @login_param.to_s %>"><%= @login_param.to_s.capitalize %>:</label>
+      <div id="forgotLoginElement" class="element">
+				<input type="text" class="text" name="<%= @login_param.to_s %>" id="<%= @login_param.to_s %>" />
+      </div>
+    </div>
+    <div id="forgotLoginActions" class="actions">
+      <div id="forgotLoginAction" class="action">
+        <input type="submit" name="forgotLoginSubmit" value="Reset Password" id="forgotLoginSubmit" />
+      </div>
+    </div>
+  </div>
+</form>
